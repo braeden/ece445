@@ -1980,7 +1980,6 @@ General-purpose diode for high-speed switching</description>
 <part name="R1" library="standardparts" deviceset="RESISTOR" device=".0805" value="500"/>
 <part name="R7" library="standardparts" deviceset="RESISTOR" device=".0805" value="500"/>
 <part name="J1" library="B2B-PH-K-S_LF__SN_" deviceset="B2B-PH-K-S(LF)(SN)" device=""/>
-<part name="GND7" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="GND" device=""/>
 <part name="GND8" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="GND" device=""/>
 <part name="SUPPLY3" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="VCC_1" device=""/>
 <part name="D5" library="diode" library_urn="urn:adsk.eagle:library:210" deviceset="BAS70" device="" package3d_urn="urn:adsk.eagle:package:43389/2"/>
@@ -2011,7 +2010,6 @@ General-purpose diode for high-speed switching</description>
 <part name="JP22" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="JP23" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="JP24" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
-<part name="JP25" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="JP26" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="JP27" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="JP28" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
@@ -2028,14 +2026,15 @@ General-purpose diode for high-speed switching</description>
 <part name="C6" library="standardparts" deviceset="CAPACITOR" device=".0805" value="4.7uF"/>
 <part name="JP30" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="JP33" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
+<part name="GND7" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
 <plain>
 <wire x1="-111.76" y1="99.06" x2="-111.76" y2="48.26" width="0.1524" layer="97"/>
-<wire x1="-111.76" y1="48.26" x2="83.82" y2="48.26" width="0.1524" layer="97"/>
-<wire x1="83.82" y1="48.26" x2="83.82" y2="99.06" width="0.1524" layer="97"/>
-<wire x1="83.82" y1="99.06" x2="-111.76" y2="99.06" width="0.1524" layer="97"/>
+<wire x1="-111.76" y1="48.26" x2="88.9" y2="48.26" width="0.1524" layer="97"/>
+<wire x1="88.9" y1="48.26" x2="88.9" y2="99.06" width="0.1524" layer="97"/>
+<wire x1="88.9" y1="99.06" x2="-111.76" y2="99.06" width="0.1524" layer="97"/>
 <circle x="27.94" y="124.46" radius="3.5921" width="0.1524" layer="97"/>
 <wire x1="-55.88" y1="142.24" x2="-55.88" y2="106.68" width="0.1524" layer="97"/>
 <wire x1="-55.88" y1="106.68" x2="83.82" y2="106.68" width="0.1524" layer="97"/>
@@ -2115,32 +2114,29 @@ Motor</text>
 <attribute name="VALUE" x="53.34" y="-68.834" size="1.778" layer="96" align="top-center"/>
 </instance>
 <instance part="D3" gate="G$1" x="-45.72" y="-38.1" smashed="yes" rot="R180">
-<attribute name="NAME" x="-44.45" y="-40.64" size="1.016" layer="95" rot="MR270"/>
+<attribute name="NAME" x="-44.45" y="-35.56" size="1.016" layer="95" rot="MR270"/>
 <attribute name="VALUE" x="-46.99" y="-40.64" size="1.016" layer="96" rot="R270"/>
 </instance>
 <instance part="D4" gate="G$1" x="-45.72" y="-40.64" smashed="yes" rot="R180">
-<attribute name="NAME" x="-44.45" y="-43.18" size="1.016" layer="95" rot="MR270"/>
+<attribute name="NAME" x="-44.45" y="-40.64" size="1.016" layer="95" rot="MR270"/>
 <attribute name="VALUE" x="-46.99" y="-43.18" size="1.016" layer="96" rot="R270"/>
 </instance>
 <instance part="R1" gate="G$1" x="-53.34" y="-38.1" smashed="yes">
-<attribute name="NAME" x="-54.61" y="-36.83" size="1.016" layer="95" rot="MR90"/>
+<attribute name="NAME" x="-52.07" y="-36.83" size="1.016" layer="95" rot="MR90"/>
 <attribute name="VALUE" x="-52.07" y="-36.83" size="1.016" layer="96" rot="R90"/>
 </instance>
 <instance part="R7" gate="G$1" x="-53.34" y="-40.64" smashed="yes">
-<attribute name="NAME" x="-54.61" y="-39.37" size="1.016" layer="95" rot="MR90"/>
-<attribute name="VALUE" x="-52.07" y="-39.37" size="1.016" layer="96" rot="R90"/>
+<attribute name="NAME" x="-52.07" y="-44.45" size="1.016" layer="95" rot="MR90"/>
+<attribute name="VALUE" x="-52.07" y="-44.45" size="1.016" layer="96" rot="R90"/>
 </instance>
 <instance part="J1" gate="G$1" x="2.54" y="93.98" smashed="yes" rot="R90">
 <attribute name="NAME" x="-0.76766875" y="91.435640625" size="1.78105" layer="95" rot="R90"/>
-</instance>
-<instance part="GND7" gate="1" x="5.08" y="81.28" smashed="yes">
-<attribute name="VALUE" x="5.08" y="81.026" size="1.778" layer="96" align="top-center"/>
 </instance>
 <instance part="GND8" gate="1" x="15.24" y="111.76" smashed="yes">
 <attribute name="VALUE" x="15.24" y="111.506" size="1.778" layer="96" align="top-center"/>
 </instance>
 <instance part="SUPPLY3" gate="G$2" x="40.64" y="124.46" smashed="yes">
-<attribute name="VALUE" x="40.64" y="127.254" size="1.778" layer="96" align="bottom-center"/>
+<attribute name="VALUE" x="43.18" y="127.254" size="1.778" layer="96" align="bottom-center"/>
 </instance>
 <instance part="D5" gate="1" x="27.94" y="116.84" smashed="yes">
 <attribute name="NAME" x="25.654" y="118.745" size="1.778" layer="95"/>
@@ -2151,125 +2147,93 @@ Motor</text>
 <attribute name="VALUE" x="29.21" y="131.445" size="1.016" layer="96" rot="R90"/>
 </instance>
 <instance part="GND6" gate="1" x="-55.88" y="-43.18" smashed="yes">
-<attribute name="VALUE" x="-55.88" y="-43.434" size="1.778" layer="96" align="top-center"/>
+<attribute name="VALUE" x="-55.88" y="-45.974" size="1.778" layer="96" align="top-center"/>
 </instance>
 <instance part="JP1" gate="G$1" x="63.5" y="-73.66" smashed="yes" rot="R180" grouprefs="SWD">
-<attribute name="NAME" x="69.85" y="-76.835" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="-68.58" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP2" gate="G$1" x="63.5" y="-78.74" smashed="yes" rot="R180" grouprefs="SWD">
-<attribute name="NAME" x="69.85" y="-81.915" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="-73.66" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP3" gate="G$1" x="63.5" y="-83.82" smashed="yes" rot="R180" grouprefs="SWD">
-<attribute name="NAME" x="69.85" y="-86.995" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="-78.74" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP4" gate="G$1" x="63.5" y="-68.58" smashed="yes" rot="R180" grouprefs="SWD">
-<attribute name="NAME" x="69.85" y="-71.755" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="-63.5" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="GND9" gate="1" x="76.2" y="-86.36" smashed="yes" grouprefs="SWD">
 <attribute name="VALUE" x="76.2" y="-86.614" size="1.778" layer="96" align="top-center"/>
 </instance>
 <instance part="JP5" gate="G$1" x="-106.68" y="-20.32" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="-23.495" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="-15.24" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP6" gate="G$1" x="-106.68" y="-15.24" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="-18.415" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="-10.16" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP7" gate="G$1" x="-106.68" y="-10.16" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="-13.335" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="-5.08" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP8" gate="G$1" x="-106.68" y="-5.08" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="-8.255" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="0" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP9" gate="G$1" x="-106.68" y="0" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="-3.175" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="5.08" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP10" gate="G$1" x="-106.68" y="5.08" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="1.905" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="10.16" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP11" gate="G$1" x="-106.68" y="10.16" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="6.985" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="15.24" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP12" gate="G$1" x="-106.68" y="15.24" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="12.065" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="20.32" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP13" gate="G$1" x="-106.68" y="20.32" smashed="yes" rot="R180" grouprefs="RADIOPINS">
-<attribute name="NAME" x="-100.33" y="17.145" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-100.33" y="25.4" size="1.778" layer="96" rot="R180"/>
 </instance>
-<instance part="JP14" gate="G$1" x="71.12" y="68.58" smashed="yes" grouprefs="POWERTEST">
-<attribute name="NAME" x="64.77" y="71.755" size="1.778" layer="95"/>
-<attribute name="VALUE" x="64.77" y="63.5" size="1.778" layer="96"/>
+<instance part="JP14" gate="G$1" x="81.28" y="71.12" smashed="yes" grouprefs="POWERTEST">
+<attribute name="VALUE" x="74.93" y="66.04" size="1.778" layer="96"/>
 </instance>
-<instance part="JP15" gate="G$1" x="71.12" y="73.66" smashed="yes" grouprefs="POWERTEST">
-<attribute name="NAME" x="64.77" y="76.835" size="1.778" layer="95"/>
-<attribute name="VALUE" x="64.77" y="68.58" size="1.778" layer="96"/>
+<instance part="JP15" gate="G$1" x="81.28" y="76.2" smashed="yes" grouprefs="POWERTEST">
+<attribute name="VALUE" x="74.93" y="71.12" size="1.778" layer="96"/>
 </instance>
-<instance part="JP16" gate="G$1" x="71.12" y="78.74" smashed="yes" grouprefs="POWERTEST">
-<attribute name="NAME" x="64.77" y="81.915" size="1.778" layer="95"/>
-<attribute name="VALUE" x="64.77" y="73.66" size="1.778" layer="96"/>
+<instance part="JP16" gate="G$1" x="81.28" y="81.28" smashed="yes" grouprefs="POWERTEST">
+<attribute name="VALUE" x="74.93" y="76.2" size="1.778" layer="96"/>
 </instance>
 <instance part="JP17" gate="G$1" x="-68.58" y="-63.5" smashed="yes" rot="R180" grouprefs="INPUTS">
-<attribute name="NAME" x="-62.23" y="-66.675" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-62.23" y="-58.42" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP18" gate="G$1" x="-68.58" y="-68.58" smashed="yes" rot="R180" grouprefs="INPUTS">
-<attribute name="NAME" x="-62.23" y="-71.755" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-62.23" y="-63.5" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP19" gate="G$1" x="-86.36" y="-63.5" smashed="yes" rot="R180" grouprefs="OUPUTS">
-<attribute name="NAME" x="-80.01" y="-66.675" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-80.01" y="-58.42" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP20" gate="G$1" x="-86.36" y="-68.58" smashed="yes" rot="R180" grouprefs="OUPUTS">
-<attribute name="NAME" x="-80.01" y="-71.755" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-80.01" y="-63.5" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP21" gate="G$1" x="50.8" y="127" smashed="yes" rot="R180" grouprefs="VIBRATIONOUTPUT">
-<attribute name="NAME" x="57.15" y="123.825" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="57.15" y="132.08" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP22" gate="G$1" x="50.8" y="121.92" smashed="yes" rot="R180" grouprefs="VIBRATIONOUTPUT">
-<attribute name="NAME" x="57.15" y="118.745" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="57.15" y="127" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP23" gate="G$1" x="63.5" y="-30.48" smashed="yes" rot="R180" grouprefs="SELECT_RESET">
-<attribute name="NAME" x="69.85" y="-33.655" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="-25.4" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP24" gate="G$1" x="63.5" y="-35.56" smashed="yes" rot="R180" grouprefs="SELECT_RESET">
-<attribute name="NAME" x="69.85" y="-38.735" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="-30.48" size="1.778" layer="96" rot="R180"/>
 </instance>
-<instance part="JP25" gate="G$1" x="63.5" y="-40.64" smashed="yes" rot="R180" grouprefs="SELECT_RESET">
-<attribute name="NAME" x="69.85" y="-43.815" size="1.778" layer="95" rot="R180"/>
-<attribute name="VALUE" x="69.85" y="-35.56" size="1.778" layer="96" rot="R180"/>
-</instance>
 <instance part="JP26" gate="G$1" x="-68.58" y="-81.28" smashed="yes" rot="R180" grouprefs="INPUTS">
-<attribute name="NAME" x="-62.23" y="-84.455" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-62.23" y="-76.2" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP27" gate="G$1" x="-81.28" y="-81.28" smashed="yes" grouprefs="OUPUTS">
-<attribute name="NAME" x="-87.63" y="-78.105" size="1.778" layer="95"/>
 <attribute name="VALUE" x="-87.63" y="-86.36" size="1.778" layer="96"/>
 </instance>
 <instance part="JP28" gate="G$1" x="-81.28" y="-86.36" smashed="yes" grouprefs="OUPUTS">
-<attribute name="NAME" x="-87.63" y="-83.185" size="1.778" layer="95"/>
 <attribute name="VALUE" x="-87.63" y="-91.44" size="1.778" layer="96"/>
 </instance>
 <instance part="JP29" gate="G$1" x="-68.58" y="-86.36" smashed="yes" rot="R180" grouprefs="INPUTS">
-<attribute name="NAME" x="-64.77" y="-76.835" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-62.23" y="-81.28" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="U2" gate="A" x="-27.94" y="124.46" smashed="yes">
@@ -2281,11 +2245,9 @@ Motor</text>
 <attribute name="VALUE" x="-29.21" y="125.73" size="1.016" layer="96" rot="R90"/>
 </instance>
 <instance part="JP31" gate="G$1" x="63.5" y="5.08" smashed="yes" rot="R180" grouprefs="UART_PRINTF">
-<attribute name="NAME" x="69.85" y="1.905" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="10.16" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="JP32" gate="G$1" x="63.5" y="0" smashed="yes" rot="R180" grouprefs="UART_PRINTF">
-<attribute name="NAME" x="69.85" y="-3.175" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="69.85" y="5.08" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="3.3V_REG" gate="G$1" x="27.94" y="73.66" smashed="yes">
@@ -2301,21 +2263,22 @@ Motor</text>
 </instance>
 <instance part="C6" gate="G$1" x="45.72" y="76.2" smashed="yes" rot="R90">
 <attribute name="NAME" x="43.815" y="74.93" size="1.016" layer="95" rot="MR0"/>
-<attribute name="VALUE" x="43.815" y="77.47" size="1.016" layer="96" rot="R180"/>
+<attribute name="VALUE" x="51.435" y="77.47" size="1.016" layer="96" rot="R180"/>
 </instance>
-<instance part="JP30" gate="G$1" x="71.12" y="55.88" smashed="yes" grouprefs="POWERTEST">
-<attribute name="NAME" x="64.77" y="59.055" size="1.778" layer="95"/>
-<attribute name="VALUE" x="64.77" y="50.8" size="1.778" layer="96"/>
+<instance part="JP30" gate="G$1" x="81.28" y="58.42" smashed="yes" grouprefs="POWERTEST">
+<attribute name="VALUE" x="74.93" y="53.34" size="1.778" layer="96"/>
 </instance>
-<instance part="JP33" gate="G$1" x="71.12" y="60.96" smashed="yes">
-<attribute name="NAME" x="64.77" y="64.135" size="1.778" layer="95"/>
-<attribute name="VALUE" x="64.77" y="55.88" size="1.778" layer="96"/>
+<instance part="JP33" gate="G$1" x="81.28" y="63.5" smashed="yes" grouprefs="POWERTEST">
+<attribute name="VALUE" x="74.93" y="58.42" size="1.778" layer="96"/>
+</instance>
+<instance part="GND7" gate="1" x="7.62" y="83.82" smashed="yes">
+<attribute name="VALUE" x="7.62" y="83.566" size="1.778" layer="96" align="top-center"/>
 </instance>
 </instances>
 <busses>
 </busses>
 <nets>
-<net name="VCC_1" class="0">
+<net name="VBAT" class="0">
 <segment>
 <pinref part="LIPO_CHARGER" gate="A" pin="OUT"/>
 <wire x1="-22.86" y1="78.74" x2="-12.7" y2="78.74" width="0.1524" layer="91"/>
@@ -2359,19 +2322,13 @@ Motor</text>
 </segment>
 <segment>
 <pinref part="JP14" gate="G$1" pin="1"/>
-<wire x1="68.58" y1="68.58" x2="63.5" y2="68.58" width="0.1524" layer="91" grouprefs="POWERTEST"/>
-<label x="68.58" y="68.58" size="1.778" layer="95" rot="R180" grouprefs="POWERTEST"/>
+<wire x1="78.74" y1="71.12" x2="73.66" y2="71.12" width="0.1524" layer="91" grouprefs="POWERTEST"/>
+<label x="73.66" y="71.12" size="1.778" layer="95" rot="R180" grouprefs="POWERTEST"/>
 </segment>
 <segment>
 <pinref part="JP21" gate="G$1" pin="1"/>
 <wire x1="53.34" y1="127" x2="66.04" y2="127" width="0.1524" layer="91" grouprefs="VIBRATIONOUTPUT"/>
 <label x="58.42" y="127" size="1.778" layer="95" grouprefs="VIBRATIONOUTPUT"/>
-</segment>
-</net>
-<net name="SHIELD" class="0">
-<segment>
-<pinref part="MICRO_USB" gate="G$1" pin="SHIELD"/>
-<wire x1="-83.82" y1="68.58" x2="-83.82" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -2398,8 +2355,8 @@ Motor</text>
 </segment>
 <segment>
 <pinref part="JP30" gate="G$1" pin="1"/>
-<wire x1="68.58" y1="55.88" x2="63.5" y2="55.88" width="0.1524" layer="91" grouprefs="POWERTEST"/>
-<label x="60.96" y="55.88" size="1.778" layer="95" grouprefs="POWERTEST"/>
+<wire x1="78.74" y1="58.42" x2="73.66" y2="58.42" width="0.1524" layer="91" grouprefs="POWERTEST"/>
+<label x="66.04" y="58.42" size="1.778" layer="95" grouprefs="POWERTEST"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -2431,7 +2388,7 @@ Motor</text>
 <wire x1="-22.86" y1="86.36" x2="-22.86" y2="83.82" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="VCC_2_NET" class="0">
+<net name="3V3" class="0">
 <segment>
 <pinref part="SUPPLY2" gate="G$1" pin="VCC_2"/>
 <pinref part="3.3V_REG" gate="G$1" pin="OUT"/>
@@ -2451,13 +2408,8 @@ Motor</text>
 </segment>
 <segment>
 <pinref part="JP16" gate="G$1" pin="1"/>
-<wire x1="68.58" y1="78.74" x2="63.5" y2="78.74" width="0.1524" layer="91" grouprefs="POWERTEST"/>
-<label x="73.66" y="86.36" size="1.778" layer="95" rot="R180" grouprefs="POWERTEST"/>
-</segment>
-<segment>
-<pinref part="JP25" gate="G$1" pin="1"/>
-<wire x1="66.04" y1="-40.64" x2="76.2" y2="-40.64" width="0.1524" layer="91" grouprefs="SELECT_RESET"/>
-<label x="71.12" y="-40.64" size="1.778" layer="95" grouprefs="SELECT_RESET"/>
+<wire x1="78.74" y1="81.28" x2="73.66" y2="81.28" width="0.1524" layer="91" grouprefs="POWERTEST"/>
+<label x="73.66" y="81.28" size="1.778" layer="95" rot="R180" grouprefs="POWERTEST"/>
 </segment>
 <segment>
 <pinref part="JP4" gate="G$1" pin="1"/>
@@ -2511,11 +2463,6 @@ Motor</text>
 <junction x="53.34" y="-63.5"/>
 </segment>
 <segment>
-<pinref part="J1" gate="G$1" pin="2"/>
-<pinref part="GND7" gate="1" pin="GND"/>
-<wire x1="5.08" y1="86.36" x2="5.08" y2="83.82" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="GND8" gate="1" pin="GND"/>
 <wire x1="15.24" y1="121.92" x2="15.24" y2="114.3" width="0.1524" layer="91"/>
 <pinref part="U2" gate="A" pin="E"/>
@@ -2539,9 +2486,8 @@ Motor</text>
 </segment>
 <segment>
 <pinref part="JP15" gate="G$1" pin="1"/>
-<wire x1="68.58" y1="73.66" x2="63.5" y2="73.66" width="0.1524" layer="91" grouprefs="POWERTEST"/>
-<label x="66.04" y="73.66" size="1.778" layer="95" rot="R180" grouprefs="POWERTEST"/>
-<label x="66.04" y="73.66" size="1.778" layer="95" rot="R180"/>
+<wire x1="78.74" y1="76.2" x2="73.66" y2="76.2" width="0.1524" layer="91" grouprefs="POWERTEST"/>
+<label x="73.66" y="76.2" size="1.778" layer="95" rot="R180" grouprefs="POWERTEST"/>
 </segment>
 <segment>
 <pinref part="JP23" gate="G$1" pin="1"/>
@@ -2577,8 +2523,13 @@ Motor</text>
 </segment>
 <segment>
 <pinref part="JP33" gate="G$1" pin="1"/>
-<wire x1="68.58" y1="60.96" x2="60.96" y2="60.96" width="0.1524" layer="91"/>
-<label x="58.42" y="60.96" size="1.778" layer="95"/>
+<wire x1="78.74" y1="63.5" x2="71.12" y2="63.5" width="0.1524" layer="91" grouprefs="POWERTEST"/>
+<label x="66.04" y="63.5" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="J1" gate="G$1" pin="2"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+<wire x1="5.08" y1="86.36" x2="7.62" y2="86.36" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SPI_SCK" class="0">
