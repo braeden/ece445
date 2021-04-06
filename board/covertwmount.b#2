@@ -148,8 +148,8 @@
 <wire x1="50.8" y1="0" x2="50.8" y2="33.528" width="0" layer="20"/>
 <wire x1="50.8" y1="33.528" x2="0" y2="33.528" width="0" layer="20"/>
 <wire x1="0" y1="33.528" x2="0" y2="0" width="0" layer="20"/>
-<text x="11.43" y="3.556" size="0.762" layer="25">Rev 1.1</text>
-<text x="8.636" y="6.858" size="0.762" layer="25">Braeden Smith
+<text x="11.43" y="3.556" size="0.762" layer="26">Rev 1.0</text>
+<text x="8.636" y="6.858" size="0.762" layer="26">Braeden Smith
 Ahmad Abuisneineh
 Srivardhan Sajja</text>
 <hole x="46.99" y="3.556" drill="3.2"/>
