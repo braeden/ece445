@@ -10,10 +10,6 @@
 //static void rfm95_reset();
 //static bool rfm95_read(rfm95_register_t reg, uint8_t *buffer);
 //static bool rfm95_write(rfm95_register_t reg, uint8_t value);
-static bool isPacketValid(uint8_t *buffer, uint8_t packetLength);
-static uint16_t computeCRC(uint16_t crc, uint8_t data, uint16_t polynomial);
-static uint16_t RadioPacketComputeCRC(uint8_t *buffer, uint8_t bufferLength,
-		uint8_t crcType);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -130,22 +126,11 @@ bool rfm95_setPower(int8_t power) {
 bool transmitPackage(uint8_t *payload, size_t payloadLength) {
 
 	if (!handle->txDone) {
-		rfm95_write(RFM95_REGISTER_OP_MODE,
-							RFM95_REGISTER_OP_MODE_LORA_RXCONTINUOUS | 0x80);
+//		rfm95_write(RFM95_REGISTER_OP_MODE,
+//							RFM95_REGISTER_OP_MODE_LORA_RXCONTINUOUS | 0x80);
 		return false;
 	}
 	handle->txDone = false;
-
-//	uint8_t preamble[4] = { 0xFF, 0xFF, 0x00, 0x00 };
-//	uint8_t *transferrablePackage = (uint8_t*) calloc(payloadLength,
-//			sizeof(uint8_t));
-
-//	memcpy(transferrablePackage, preamble, 4);
-//	memcpy(transferrablePackage + 4, payload, payloadLength);
-//	payload[0] = 0xff;
-//	payload[1] = 0xff;
-//	payload[2] = 0x00;
-//	payload[3] = 0x00;
 
 	uint8_t regopmode = 0;
 	do {
@@ -338,56 +323,3 @@ void rfm95_reset() {
 	HAL_Delay(5);
 }
 
-/**
- * Checks if packet is valid by reading preamble
- */
-static bool isPacketValid(uint8_t *buffer, uint8_t packetLength) {
-	return true;
-}
-
-/**
- * Computes and return CRC for 1 byte
- */
-static uint16_t computeCRC(uint16_t crc, uint8_t data, uint16_t polynomial) {
-	uint8_t i;
-	for (i = 0; i < 8; i++) {
-		if ((((crc & 0x8000) >> 8) ^ (data & 0x80)) != 0) {
-			crc <<= 1;
-			crc ^= polynomial;
-		} else {
-			crc <<= 1;
-		}
-		data <<= 1;
-	}
-	return crc;
-}
-
-/**
- * Computes and return CRC for full input buffer
- */
-#define CRC_TYPE_CCITT   0
-#define CRC_TYPE_IBM     1
-#define POLYNOMIAL_CCITT 0x1021
-#define POLYNOMIAL_IBM   0x8005
-#define CRC_IBM_SEED     0xFFFF
-#define CRC_CCITT_SEED   0x1D0F
-static uint16_t RadioPacketComputeCRC(uint8_t *buffer, uint8_t bufferLength,
-		uint8_t crcType) {
-
-	uint8_t i;
-	uint16_t crc;
-	uint16_t polynomial;
-
-	polynomial = (crcType == CRC_TYPE_IBM) ? POLYNOMIAL_IBM : POLYNOMIAL_CCITT;
-	crc = (crcType == CRC_TYPE_IBM) ? CRC_IBM_SEED : CRC_CCITT_SEED;
-
-	for (i = 0; i < bufferLength; i++) {
-		crc = ComputeCRC(crc, buffer[i], polynomial);
-	}
-
-	if (crcType == CRC_TYPE_IBM) {
-		return crc;
-	} else {
-		return (uint16_t) (~crc);
-	}
-}

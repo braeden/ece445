@@ -72,9 +72,6 @@ void Error_Handler(void);
 #define PAIR_EXTI_IRQn EXTI4_15_IRQn
 #define VIBE_PWM_Pin GPIO_PIN_8
 #define VIBE_PWM_GPIO_Port GPIOA
-#define RESET2_Pin GPIO_PIN_6
-#define RESET2_GPIO_Port GPIOB
-#define RESET2_EXTI_IRQn EXTI4_15_IRQn
 #define VIBE_BUTTON_Pin GPIO_PIN_8
 #define VIBE_BUTTON_GPIO_Port GPIOB
 #define VIBE_BUTTON_EXTI_IRQn EXTI4_15_IRQn
