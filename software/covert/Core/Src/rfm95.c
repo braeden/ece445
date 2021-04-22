@@ -35,6 +35,7 @@ bool rfm95_init(rfm95_handle_t *handle_pointer) {
 	uint8_t version = 0;
 	if (!rfm95_read(RFM95_REGISTER_VERSION, &version))
 		return false;
+
 	if (version != RFM9x_VER)
 		return false;
 

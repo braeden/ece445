@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
+#include <assert.h>
 #include "crypto.h"
 #include "rfm95.h"
 
@@ -51,21 +52,35 @@ typedef struct __attribute__((__packed__)) {
 	uint8_t deviceID;
 	uint32_t sequenceNumber;
 	uint64_t data;
+	uint16_t _placeholder;
 } Packet;
+
+typedef struct __attribute__((__packed__)) {
+	uint8_t preamble;
+	uint8_t data[32];
+} PublicKeyPacket;
+
+typedef struct __attribute__((__packed__)) {
+	uint8_t preamble;
+	uint8_t data[16];
+} KeyExchangePacket;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
 #define MASTER_DEVICE 	0
-#define DEVICE_ID 		3
+#define DEVICE_ID 		1
 #define RESET 			0
+#define NEW_SEQ			0
+
 
 #define AESKeySize 128/8 //(8 * sizeof(uint32_t));
 #define PUBLIC_EXCHANGE_PREAMBLE 0b01010101
 #define AES_KEY_EXCHANGE_PREAMBLE 0b10101010
 #define VIBE_PREAMBLE 0b11110000
-#define DUTY_CYCLE_ON 10
+#define DUTY_CYCLE_ON 0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -75,8 +90,7 @@ typedef struct __attribute__((__packed__)) {
 
 /* Private variables ---------------------------------------------------------*/
 CRYP_HandleTypeDef hcryp;
-uint32_t pKeyAES[4] __ALIGN_END = { 0x00000000, 0x00000000, 0x00000000,
-		0x00000000 };
+uint32_t pKeyAES[4] = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
 __ALIGN_BEGIN static const uint32_t pInitVectAES[4] __ALIGN_END = { 0x5B841799,
 		0xF2DBC132, 0x3961879F, 0x8B3F49C0 };
 
@@ -91,6 +105,8 @@ TIM_HandleTypeDef htim16;
 
 /* USER CODE BEGIN PV */
 FLASH_EraseInitTypeDef EraseInitStruct;
+FLASH_EraseInitTypeDef EraseSeqStruct;
+
 AsymmetricKeys aKeys;
 Record playback;
 Record recording;
@@ -112,6 +128,8 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 static void readKeyFromFlash(uint32_t *ptr, FLASH_EraseInitTypeDef *erase);
 static void writeKeyToFlash(uint64_t *ptr, FLASH_EraseInitTypeDef *erase);
+static uint32_t readSeqFromFlash(FLASH_EraseInitTypeDef *erase);
+static void writeSeqToFlash(uint32_t seq, FLASH_EraseInitTypeDef *erase);
 static void readingCallback(uint8_t *buffer, uint8_t length);
 /* USER CODE END PFP */
 
@@ -142,10 +160,21 @@ int main(void) {
 	SystemClock_Config();
 
 	/* USER CODE BEGIN SysInit */
+	uint8_t testing = sizeof(Packet);
+	assert(
+			sizeof(PublicKeyPacket) == 33 && sizeof(KeyExchangePacket) == 17
+					&& sizeof(Packet) == 16);
+	// Key writing to flash
 	EraseInitStruct.Banks = FLASH_BANK_1;
 	EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
 	EraseInitStruct.Page = (FLASH_PAGE_NB - 1);
 	EraseInitStruct.NbPages = 1;
+
+	// Sequence Number storing in flash
+	EraseSeqStruct.Banks = FLASH_BANK_1;
+	EraseSeqStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+	EraseSeqStruct.Page = (FLASH_PAGE_NB - 2);
+	EraseSeqStruct.NbPages = 1;
 
 	recording.enabled = 0;
 	playback.enabled = 0;
@@ -180,8 +209,12 @@ int main(void) {
 	MX_TIM1_Init();
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
+
+	HAL_Delay(100);
 	if (!rfm95_init(&radio)) {
 		HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+
 		while (1) {
 
 		}
@@ -206,8 +239,17 @@ int main(void) {
 	}
 	MX_AES_Init();
 
-	// Generate a random sequence number for packets
-	HAL_RNG_GenerateRandomNumber(&hrng, &deviceSeqs[DEVICE_ID]);
+	// Generate a random sequence number for packets -- assume 2000 is the most packets we'll ever send while devices haven't rebooted
+	deviceSeqs[DEVICE_ID] = readSeqFromFlash(&EraseSeqStruct);
+	if (NEW_SEQ || deviceSeqs[DEVICE_ID] >= ((UINT32_MAX) >> 1)
+			|| deviceSeqs[DEVICE_ID] == 0) {
+		uint32_t seq = 0;
+		HAL_RNG_GenerateRandomNumber(&hrng, &seq);
+		seq >>= 1;
+		deviceSeqs[DEVICE_ID] = seq;
+	}
+	deviceSeqs[DEVICE_ID] += 2000;
+	writeSeqToFlash(deviceSeqs[DEVICE_ID], &EraseSeqStruct);
 
 	// Might as well generate a public key in advance
 	for (int i = 0; i < 8; i++) {
@@ -222,8 +264,11 @@ int main(void) {
 	while (1) {
 		if (aKeys.pairing && aKeys.pairing++ <= 5) {
 			// send our public key in plaintext.
-			transmitPackage(aKeys.publicKey, 32);
-			// randomize the delay here todo
+			PublicKeyPacket tmp;
+			tmp.preamble = PUBLIC_EXCHANGE_PREAMBLE;
+			memcpy(tmp.data, aKeys.publicKey, sizeof(tmp.data));
+			transmitPackage(&tmp, sizeof(PublicKeyPacket));
+			// randomize the delay here
 			uint32_t randoffset = 0;
 			HAL_RNG_GenerateRandomNumber(&hrng, &randoffset);
 
@@ -236,24 +281,32 @@ int main(void) {
 		if (aKeys.gotOther) {
 			C25519keyExchange(aKeys.sharedSecret, (uint8_t*) aKeys.privateKey,
 					aKeys.otherPublicKey);
-			rfm95_init(&radio);
+//			rfm95_init(&radio);
 			aKeys.gotOther = 0;
 			aKeys.masterSent = 1;
 		}
 
-		if (aKeys.masterSent && aKeys.masterSent++ <= 10) {
+		if (aKeys.masterSent && aKeys.masterSent++ <= 5) {
 			if (MASTER_DEVICE) {
+				// Save the "master's secret key" in old pkeys
 				uint32_t oldPkeys[4] = { 0 };
 				memcpy(oldPkeys, pKeyAES, AESKeySize);
+				// move the shared secret to the AES hardware for encryption
 				memcpy(pKeyAES, aKeys.sharedSecret, AESKeySize);
 				MX_AES_Init();
-				uint8_t buffer[48] = { 0 };
-				for (int i = 0; i < 48; i++) {
-					buffer[i] = i;
-				}
-				if (HAL_CRYP_Encrypt(&hcryp, (uint8_t*) oldPkeys, 16, buffer, 1)
+				// Create a packet & attack the "master's key"
+				KeyExchangePacket tmp;
+				tmp.preamble = AES_KEY_EXCHANGE_PREAMBLE;
+				memcpy(tmp.data, oldPkeys, AESKeySize);
+
+				// Output the encrypted packet in a buffer
+				uint8_t inputBuf[32] = { 0 };
+				memcpy(inputBuf, &tmp, sizeof(KeyExchangePacket));
+				uint8_t outputBuf[32] = { 0 };
+
+				if (HAL_CRYP_Encrypt(&hcryp, inputBuf, 32, outputBuf, 1)
 						== HAL_OK) {
-					transmitPackage(buffer, 16);
+					transmitPackage(outputBuf, 32);
 				}
 				memcpy(pKeyAES, oldPkeys, AESKeySize);
 				MX_AES_Init();
@@ -279,7 +332,7 @@ int main(void) {
 			HAL_CRYP_Encrypt(&hcryp, (uint8_t*) tempin, 16, (uint8_t*) tempout,
 					1);
 			outgoing.data = 0;
-			for (uint8_t i = 0; i < 3; i++) {
+			for (uint8_t i = 0; i < 1; i++) {
 				while (!transmitPackage((uint8_t*) tempout, 16)) {
 					HAL_Delay(70);
 				}
@@ -290,7 +343,7 @@ int main(void) {
 		HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 
 //		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);
-		HAL_Delay(10);
+		HAL_Delay(250);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -717,44 +770,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 }
 
 static void readingCallback(uint8_t *buffer, uint8_t length) {
-	if (aKeys.pairing && length == 32) {
-		memcpy(aKeys.otherPublicKey, buffer, length);
-		aKeys.gotOther = 1;
-	} else if (!MASTER_DEVICE && length == 16 && aKeys.masterSent) {
+	if (aKeys.pairing && length == sizeof(PublicKeyPacket)) {
+		PublicKeyPacket tmp;
+		tmp.preamble = 0;
+		memcpy(&tmp, buffer, length);
+		if (tmp.preamble == PUBLIC_EXCHANGE_PREAMBLE) {
+			memcpy(aKeys.otherPublicKey, tmp.data, 32);
+			aKeys.gotOther = 1;
+		}
+	} else if (!MASTER_DEVICE && length == 32 && aKeys.masterSent) {
 		// try to decrypt with shared secret
 		uint32_t oldPkeys[4] = { 0 };
-		uint32_t newPkeys[4] = { 0 };
+
 		memcpy(oldPkeys, pKeyAES, AESKeySize);
 		memcpy(pKeyAES, aKeys.sharedSecret, AESKeySize);
 		MX_AES_Init();
-		if (HAL_CRYP_Decrypt(&hcryp, buffer, 16, (uint8_t*) newPkeys, 1)
-				== HAL_OK) {
-			writeKeyToFlash((uint64_t*) newPkeys, &EraseInitStruct);
-			memcpy(pKeyAES, newPkeys, AESKeySize);
-			// We don't necessarily have to have this here -- we can let it keep writing
-			aKeys.masterSent = 0;
+
+		uint8_t decryptRes[32] = { 0 };
+		if (HAL_CRYP_Decrypt(&hcryp, buffer, length, decryptRes, 1) == HAL_OK) {
+			KeyExchangePacket tmp;
+			tmp.preamble = 0;
+			memcpy(&tmp, decryptRes, sizeof(decryptRes));
+			if (tmp.preamble == AES_KEY_EXCHANGE_PREAMBLE) {
+				writeKeyToFlash((uint64_t*) tmp.data, &EraseInitStruct);
+
+				memcpy(pKeyAES, tmp.data, AESKeySize);
+				// We don't necessarily have to have this here -- we can let it keep writing
+				aKeys.masterSent = 0;
+			}
 		} else {
 			memcpy(pKeyAES, oldPkeys, AESKeySize);
 		}
 		MX_AES_Init();
-	} else {
-
-		if (length != 16) {
-			// something went wrong
-			return;
-		}
-		uint32_t tempout[4] = { 0 };
+	} else if (length == sizeof(Packet)) {
 		Packet tmp;
-		if (HAL_CRYP_Decrypt(&hcryp, buffer, 16, (uint8_t*) tempout, 1)
-				== HAL_OK) {
-			memcpy(&tmp, tempout, sizeof(Packet));
-			if (tmp.preamble == VIBE_PREAMBLE
-					&& tmp.sequenceNumber > deviceSeqs[tmp.deviceID]) {
-				playback.data = tmp.data;
-				playback.enabled = 1;
-				playback.count = 0;
-				deviceSeqs[tmp.deviceID] = tmp.sequenceNumber;
-			}
+		tmp.preamble = 0;
+		if (HAL_CRYP_Decrypt(&hcryp, buffer, length, &tmp, 1) == HAL_OK
+				&& tmp.preamble == VIBE_PREAMBLE
+				&& tmp.sequenceNumber > deviceSeqs[tmp.deviceID]) {
+
+			playback.data = tmp.data;
+			playback.enabled = 1;
+			playback.count = 0;
+			deviceSeqs[tmp.deviceID] = tmp.sequenceNumber;
+
 		}
 	}
 }
@@ -768,16 +827,33 @@ static void readKeyFromFlash(uint32_t *ptr, FLASH_EraseInitTypeDef *erase) {
 }
 
 static void writeKeyToFlash(uint64_t *ptr, FLASH_EraseInitTypeDef *erase) {
-
+//801f800
 	uint32_t addr = 0x08000000 + FLASH_PAGE_SIZE * erase->Page;
 
 	uint32_t pgerr = 0;
 	HAL_FLASH_Unlock();
 	HAL_FLASHEx_Erase(erase, &pgerr);
-	for (int i = 0; i < AESKeySize / sizeof(uint64_t); i++) {
-		HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD,
-				addr + (sizeof(uint64_t)) * i, ptr[i]);
+	uint64_t alignedtmp[2] = { 0 };
+	memcpy(alignedtmp, ptr, sizeof(alignedtmp));
+	for (int i = 0; i < 2; i++) {
+		uint64_t val = alignedtmp[i];
+		uint32_t location = addr + (sizeof(uint64_t)) * i;
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, location, val);
 	}
+	HAL_FLASH_Lock();
+}
+
+static uint32_t readSeqFromFlash(FLASH_EraseInitTypeDef *erase) {
+	uint32_t addr = 0x08000000 + FLASH_PAGE_SIZE * erase->Page;
+	return *((uint32_t*) addr);
+}
+static void writeSeqToFlash(uint32_t seq, FLASH_EraseInitTypeDef *erase) {
+//801f000
+	uint32_t addr = 0x08000000 + FLASH_PAGE_SIZE * erase->Page;
+	uint32_t pgerr = 0;
+	HAL_FLASH_Unlock();
+	HAL_FLASHEx_Erase(erase, &pgerr);
+	HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, addr, seq);
 	HAL_FLASH_Lock();
 }
 
