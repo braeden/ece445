@@ -75,12 +75,11 @@ typedef struct __attribute__((__packed__)) {
 #define RESET 			0
 #define NEW_SEQ			0
 
-
 #define AESKeySize 128/8 //(8 * sizeof(uint32_t));
 #define PUBLIC_EXCHANGE_PREAMBLE 0b01010101
 #define AES_KEY_EXCHANGE_PREAMBLE 0b10101010
 #define VIBE_PREAMBLE 0b11110000
-#define DUTY_CYCLE_ON 0
+#define DUTY_CYCLE_ON 10
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -90,7 +89,8 @@ typedef struct __attribute__((__packed__)) {
 
 /* Private variables ---------------------------------------------------------*/
 CRYP_HandleTypeDef hcryp;
-uint32_t pKeyAES[4] = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
+uint32_t pKeyAES[4] __ALIGN_END = { 0x00000000,
+		0x00000000, 0x00000000, 0x00000000 };
 __ALIGN_BEGIN static const uint32_t pInitVectAES[4] __ALIGN_END = { 0x5B841799,
 		0xF2DBC132, 0x3961879F, 0x8B3F49C0 };
 
@@ -286,7 +286,7 @@ int main(void) {
 			aKeys.masterSent = 1;
 		}
 
-		if (aKeys.masterSent && aKeys.masterSent++ <= 5) {
+		if (aKeys.masterSent && aKeys.masterSent++ <= 10) {
 			if (MASTER_DEVICE) {
 				// Save the "master's secret key" in old pkeys
 				uint32_t oldPkeys[4] = { 0 };
@@ -332,7 +332,7 @@ int main(void) {
 			HAL_CRYP_Encrypt(&hcryp, (uint8_t*) tempin, 16, (uint8_t*) tempout,
 					1);
 			outgoing.data = 0;
-			for (uint8_t i = 0; i < 1; i++) {
+			for (uint8_t i = 0; i < 3; i++) {
 				while (!transmitPackage((uint8_t*) tempout, 16)) {
 					HAL_Delay(70);
 				}
@@ -669,11 +669,17 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : PAIR_Pin VIBE_BUTTON_Pin */
-	GPIO_InitStruct.Pin = PAIR_Pin | VIBE_BUTTON_Pin;
+	/*Configure GPIO pin : PAIR_Pin */
+	GPIO_InitStruct.Pin = PAIR_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	HAL_GPIO_Init(PAIR_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : VIBE_BUTTON_Pin */
+	GPIO_InitStruct.Pin = VIBE_BUTTON_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(VIBE_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : LED1_Pin */
 	GPIO_InitStruct.Pin = LED1_Pin;
@@ -694,6 +700,11 @@ static void MX_GPIO_Init(void) {
 /* USER CODE BEGIN 4 */
 
 void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin) {
+//	To enable instant replay
+//	if (GPIO_Pin == VIBE_BUTTON_Pin) {
+//		TIM1->CCR1 = (DUTY_CYCLE_ON * UINT16_MAX) / 10;
+//		HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+//	}
 
 	if (recording.enabled || aKeys.pairing) {
 		return;
@@ -714,6 +725,11 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == RADIO_INT_Pin) {
 		rfm95_handleInterrupt();
 	}
+//	To enable instant replay
+//	if (GPIO_Pin == VIBE_BUTTON_Pin) {
+//		TIM1->CCR1 = 0;
+//		HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+//	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
@@ -727,7 +743,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim == &htim16 && (recording.enabled || playback.enabled)) {
 
 		if (playback.enabled) {
-			uint8_t state = (playback.data >> (playback.count++)) & 1;
+			uint64_t shifted = (playback.data >> (playback.count++));
+			uint8_t state = shifted & 1;
 
 			TIM1->CCR1 = state ? (DUTY_CYCLE_ON * UINT16_MAX) / 10 : 0;
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin,
@@ -754,9 +771,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				outgoing.sequenceNumber = ++deviceSeqs[DEVICE_ID];
 				outgoing.data = recording.data;
 
-				playback.data = recording.data;
-				playback.enabled = 1;
-				playback.count = 0;
+				// replay on local device:
+//				playback.data = recording.data;
+//				playback.enabled = 1;
+//				playback.count = 0;
+
 				recording.enabled = 0;
 				if (state) {
 					recording.enabled = 1;
